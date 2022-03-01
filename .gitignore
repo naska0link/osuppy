@@ -129,4 +129,5 @@ dmypy.json
 .pyre/
 
 # workspace file
-osuppyWS.code-workspace
+.code-workspace
+workspace.code-workspace
