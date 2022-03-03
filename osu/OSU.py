@@ -1,12 +1,12 @@
 from .osuparser import *
 
 
-class Mapobject():
+class OSU():
     def __init__(self, filename=None):
         if type(filename) == str:
-            self.parse_osu_file(filename)
+            self.load_osu(filename)
 
-    def parse_osu_file(self, filename):
+    def load_osu(self, filename):
         # Reads the osu file given and splits it up
         with open(filename, encoding="utf-8") as f:
             data = f.read()
