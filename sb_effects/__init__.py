@@ -1,1 +1,27 @@
 from osuppy.osb import *
+alt_file_name = {
+    "#": "pound",
+    "%": "percent",
+    "&": "ampersand",
+    "{": "leftCBracket",
+    "}": "rightCBracket",
+    "\\": "backSlash",
+    "<": "leftABracket",
+    ">": "rightABracket",
+    "*": "asterisk",
+    "?": "question",
+    "/": "forward",
+    " ": "blank",
+    "$": "dollar",
+    "!": "exclamation",
+    ".": "period",
+    "'": "single",
+    '"': "double quotes",
+    ":": "colon",
+    "@": "at",
+    "+": "plus",
+    "`": "backtick",
+    "|": "pipe",
+    "=": "equal",
+    " ": "space"
+}

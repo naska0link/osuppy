@@ -15,7 +15,7 @@ class Sprite:
             raise ValueError(f"Filepath {filepath} does not exist")
         self.filepath = filepath
         # Test the given layer
-        if layer not in ["Background", "Fail", "Pass", "Foreground"]:
+        if layer not in ["Background", "Fail", "Pass", "Foreground", "Overlay"]:
             raise ValueError(f"Layer of {layer} is not a correct layer")
         self.layer = layer
         # Test the given origin
@@ -33,10 +33,8 @@ class Sprite:
         self.pos = pos
         # Creates the list to append the commands to and saves this to the OSB object
         self.commands = []
-        if overlay:
-            OSB.sb_overlay[level].append(self)
-        else:
-            OSB.obj_level[level].append(self)
+        self.obj_type = "Sprite"
+        OSB.osb_level[layer][level].append(self)
 
     def _convert_time(self, time):
         '''08:38:685
@@ -271,14 +269,12 @@ class Sprite:
         self.commands.append(["_P", easing, start_time, end_time, "A"])
 
     def write(self):
-        return f"Sprite,{self.layer},{self.origin},{self.filepath},{self.pos[0]},{self.pos[1]}\n" + "\n".join([','.join(nl) for nl in self.commands])
+        return f"{self.obj_type},{self.layer},{self.origin},{self.filepath},{self.pos[0]},{self.pos[1]}\n" + "\n".join([','.join(nl) for nl in self.commands])
 
 
 class OSB():
-    bg_video = defaultdict(list)
-    obj_level = defaultdict(list)
-    sb_overlay = defaultdict(list)
-    sb_sound = defaultdict(list)
+    osb_level = {"Background": defaultdict(list), "Fail": defaultdict(list), "Pass": defaultdict(
+        list), "Foreground": defaultdict(list), "Overlay": defaultdict(list), "Sound": defaultdict(list)}
 
     def __init__(self, filename=None, framerate=60, overwrite=False, osu_osb=False):
         self.framerate = framerate
@@ -307,14 +303,9 @@ class OSB():
         if os.path.isfile(filename):
             os.remove(filename)
         osb_file = ['[Events]']
-        osb_file.append("//Background and Video events")
-        osb_file = osb_file + self._process_layer(OSB.bg_video)
-        osb_file.append("//Storyboard Layer 0 (Background)")
-        osb_file = osb_file + self._process_layer(OSB.obj_level)
-        osb_file.append("//Storyboard Layer 4 (Overlay)")
-        osb_file = osb_file + self._process_layer(OSB.sb_overlay)
-        osb_file.append("//Storyboard Sound Samples")
-        osb_file = osb_file + self._process_layer(OSB.sb_sound)
+        for i, (key, lay) in enumerate(OSB.osb_level.items()):
+            osb_file.append(f"//Storyboard Layer {i} ({key})")
+            osb_file = osb_file + self._process_layer(lay)
         if osu_osb:
             return osb_file
         else:
